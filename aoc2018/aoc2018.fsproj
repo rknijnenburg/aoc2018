@@ -6,52 +6,54 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<Compile Include="Day12\Day12.fs" />
-	<Compile Include="Day1\Day1.fs" />
-	<Content Include="Day12\input.txt" />
+    <EmbeddedResource Remove="Day12\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<Compile Include="Day1\ChronalCalibration.fs" />
 	<Content Include="Day1\input.txt">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</Content>
-	<Compile Include="Day2\Day2.fs" />
+	<Compile Include="Day2\InventoryManagementSystem.fs" />
 	<Content Include="Day2\input.txt">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</Content>
-	<Compile Include="Day3\Day3.fs" />
+	<Compile Include="Day3\NoMatterHowYouSliceIt.fs" />
 	<Content Include="Day3\input.txt">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</Content>
 
-	<Compile Include="Day4\Day4.fs" />
+	<Compile Include="Day4\ReposeRecord.fs" />
 	<Content Include="Day4\input.txt">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</Content>
 
-	<Compile Include="Day5\Day5.fs" />
+	<Compile Include="Day5\AlchemicalReduction.fs" />
 	<Content Include="Day5\input.txt">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</Content>
-	<Compile Include="Day6\Day6.fs" />
+	<Compile Include="Day6\ChronalCoordinates.fs" />
 	<Content Include="Day6\input.txt">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</Content>
 
-	<Compile Include="Day7\Day7.fs" />
+	<Compile Include="Day7\TheSumOfItsParts.fs" />
 	<Content Include="Day7\input.txt">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</Content>
-	<Compile Include="Day8\Day8.fs" />
+	<Compile Include="Day8\MemoryManeuver.fs" />
 	<Content Include="Day8\input.txt">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</Content>
-	<Compile Include="Day9\Day9.fs" />
+	<Compile Include="Day9\Marble Mania.fs" />
 	<Content Include="Day9\input.txt">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</Content>
-	<Compile Include="Day10\Day10.fs" />
+	<Compile Include="Day10\The Stars Align.fs" />
 	<Content Include="Day10\input.txt">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</Content>
-	<Compile Include="Day11\Day11.fs" />
+	<Compile Include="Day11\Chronal Charge.fs" />
 	<Compile Include="Program.fs" />
   </ItemGroup>
 

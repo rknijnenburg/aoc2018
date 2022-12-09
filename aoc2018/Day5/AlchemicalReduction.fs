@@ -1,75 +1,61 @@
-﻿module Day5
+﻿module Day5.AlchemicalReduction
 
 open System.IO
 open System
+open System.Text
+open System.Linq
 
-let ReadPolymer(): string =
+let Parse(): string =
     File.ReadAllText("Day5/input.txt").Trim()
 
-let IsReaction(c1: char, c2: char): bool = 
-     (Char.IsLower(c1) && Char.IsUpper(c2) && c1 = Char.ToLower(c2)) || (Char.IsUpper(c1) && Char.IsLower(c2) && (c1 = Char.ToUpper(c2)))
-
-let TriggerBackwards(polymer: string, marker: int):  ( bool * string * int) = 
-    let mutable result = false, polymer, marker
-    if (marker > 0 && marker < polymer.Length) then
-        let c1 = polymer.[marker-1]
-        let c2 =  polymer.[marker]
-        if (IsReaction(polymer.[marker], polymer.[marker-1])) then
-           result <- true, polymer.Substring(0, marker - 1) + polymer.Substring(marker+1), marker - 2
-
-    result
-        
-
-let TriggerForward(polymer: string, marker: int):  ( bool * string * int) = 
-    let mutable result = false, polymer, marker
-    if (marker > 0 && marker < (polymer.Length - 1)) then
-        let c1 = polymer.[marker]
-        let c2 =  polymer.[marker+1]
-        if (IsReaction(polymer.[marker], polymer.[marker+1])) then
-            result <- true, polymer.Substring(0, marker) + polymer.Substring(marker+2), marker - 1
-    
-    result
-
-
-let TriggerNextUnit(polymer: string, marker: int): ( bool * string * int) =
-    let mutable r, p, m = TriggerBackwards(polymer, marker)
-    if r then
-        true, p, m
-    else
-        let mutable r, p, m = TriggerForward(polymer, marker)
-        if r then
-            true, p, m            
-        else
-            false, polymer, marker
-
 let ProcessPolymer(polymer: string): string = 
-    let mutable marker = 0
-    let mutable processed = polymer
+    let mutable units = polymer.ToCharArray();
+    let mutable m = 0
+    let mutable i = 1
     
-    while marker < polymer.Length - 1 do
-        let r, p, m = TriggerNextUnit(processed, marker)
-        processed <- p
-        marker <- m
-        if not r then
-            marker <- marker + 1
+    while i < units.Length do
+        if abs((int) units[m] - (int) units[i]) = 32 then
+            units.[m] <- '*'
+            units.[i] <- '*'
+            i <- i + 1
+            while m > 0 && units.[m] = '*' do
+                m <- m - 1
+        else
+            i <- i + 1
+            m <- m + 1
+        while m < units.Length && units.[m] = '*' do
+            m <- m + 1
+        if m = i then
+            i <- m + 1
 
-    processed
+    (new string(units)).Replace("*", "")
 
-let CalculateUnitsRemaining: int =
-    ProcessPolymer(ReadPolymer()).Length
+let GetRemaining(polymer: string): int =
+    ProcessPolymer(polymer).Length
 
-let CalculateShortestPolymer: int =
-    let polymer = ReadPolymer()
+let FindShortestPolymer(polymer: string): int =
     let mutable min = Int32.MaxValue
 
-    for i = 0 to 25 do
-        let lower = Convert.ToChar(Convert.ToInt32('a') + i).ToString()
-        let upper = Convert.ToChar(Convert.ToInt32('A') + i).ToString()
-        min <- Math.Min(min, ProcessPolymer(polymer.Replace(lower, "").Replace(upper, "")).Length)
+    for i = (int) 'a' to (int) 'z' do
+        let c = ((char) i).ToString()
+        min <- Math.Min(min, ProcessPolymer(polymer.Replace(c, "").Replace(c.ToUpper(), "")).Length)
 
     min
 
-let Solve: string = 
-    sprintf "Day 5\n" +
-    sprintf "How many units remain after fully reacting the polymer you scanned? %i\n" CalculateUnitsRemaining +
-    sprintf "What is the length of the shortest polymer you can produce? %i\n" CalculateShortestPolymer
+let Solve(): string = 
+    let mutable builder = new StringBuilder();
+    
+    builder <- builder.AppendLine("Day 5: Alchemical Reduction");
+    builder <- builder.AppendLine()
+
+    let polymer = Parse();
+
+    builder <- builder.AppendLine("How many units remain after fully reacting the polymer you scanned?")
+    builder <- builder.AppendLine(sprintf "%i" (GetRemaining(polymer)))
+    builder <- builder.AppendLine()
+
+    builder <- builder.AppendLine("What is the length of the shortest polymer you can produce?")
+    builder <- builder.AppendLine(sprintf "%i" (FindShortestPolymer(polymer)))
+    builder <- builder.AppendLine()
+
+    builder.ToString()

@@ -1,22 +1,33 @@
 ﻿// Learn more about F# at http://fsharp.org
 
 open System
+open System.Diagnostics
+
+let execute(f: Func<string>) =
+    let stopwatch = Stopwatch.StartNew();
+
+    printfn "---------------------------------------------------------"
+    printf "%s" (f.Invoke())
+    printfn "elapsed: %s" (stopwatch.Elapsed.ToString())
+    printfn ""
+
 
 [<EntryPoint>]
 let main argv =
 
-    printfn "%s" Day1.Solve;
-    printfn "%s" Day2.Solve;
-    printfn "%s" Day3.Solve;
-    printfn "%s" Day4.Solve;
-    printfn "%s" Day5.Solve;
-    printfn "%s" Day6.Solve;
-    printfn "%s" Day7.Solve;
-    printfn "%s" Day8.Solve;
-    printfn "%s" Day9.Solve;
-    printfn "%s" Day10.Solve;
-    printfn "%s" Day11.Solve;
-    
+    execute(Day1.ChronalCalibration.Solve);
+    execute(Day2.InventoryManagementSystem.Solve);
+    execute(Day3.NoMatterHowYouSliceIt.Solve);
+    execute(Day4.ReposeRecord.Solve);
+    execute(Day5.AlchemicalReduction.Solve);
+    execute(Day6.ChronalCoordinates.Solve);
+    execute(Day7.TheSumOfItsParts.Solve);
+    execute(Day8.MemoryManeuver.Solve);
+    execute(Day9.MarbleMania.Solve);
+    execute(Day10.TheStarsAlign.Solve);
+    execute(Day11.ChronalCharge.Solve);
+    execute(Day12.SubterraneanSustainability.Solve);
+
     Console.ReadKey() |> ignore
 
     0 // return an integer exit code

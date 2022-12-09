@@ -1,4 +1,4 @@
-﻿module Day11
+﻿module Day11.ChronalCharge
 
 open System
 open System.Text
@@ -24,11 +24,11 @@ let CalculateMaxSquareLevel(table: int[,], size: int) : Result =
                 
     result
     
-let CalculateSquareLargestPower: Result =
+let CalculateSquareLargestPower(): Result =
     CalculateMaxSquareLevel(BuildSummedAreaTable(7315), 3)
 
 
-let CalculateSquareSizeLargestPower: Result =
+let CalculateSquareSizeLargestPower(): Result =
     let table = BuildSummedAreaTable(7315)
     let mutable result: Result = { Level = Int32.MinValue; X = 0; Y = 0; Size = 0 }
 
@@ -39,13 +39,22 @@ let CalculateSquareSizeLargestPower: Result =
 
     result
 
-let Solve: string = 
+let Solve(): string = 
     let mutable builder = new StringBuilder()
-    builder <- builder.AppendLine("Day 11")
-    let result = CalculateSquareLargestPower
-    builder <- builder.AppendLine(sprintf "What is the X,Y coordinate of the top-left fuel cell of the 3x3 square with the largest total power? %i,%i (%i)" result.X result.Y result.Level)
-    let result = CalculateSquareSizeLargestPower
-    builder <- builder.AppendLine(sprintf "What is the X,Y,size identifier of the square with the largest total power? %i,%i,%i (%i)" result.X result.Y result.Size result.Level)
+
+    builder <- builder.AppendLine("Day 11: Chronal Charge")
+    builder <- builder.AppendLine()
+
+    let result = CalculateSquareLargestPower()
+    builder <- builder.AppendLine("What is the X,Y coordinate of the top-left fuel cell of the 3x3 square with the largest total power?")
+    builder <- builder.AppendLine(sprintf "%i,%i (%i)" result.X result.Y result.Level)
+    builder <- builder.AppendLine()
+
+    let result = CalculateSquareSizeLargestPower();
+    builder <- builder.AppendLine(sprintf "What is the X,Y,size identifier of the square with the largest total power?" )
+    builder <- builder.AppendLine(sprintf "%i,%i,%i (%i)" result.X result.Y result.Size result.Level)
+    builder <- builder.AppendLine()
+
     builder.ToString()
 
     

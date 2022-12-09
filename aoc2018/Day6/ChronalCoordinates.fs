@@ -1,23 +1,22 @@
-﻿module Day6
+﻿module Day6.ChronalCoordinates
 
 open System
 open System.IO
 open System.Linq
 open System.Collections.Generic
+open System.Text
 
 type Point = { X: int; Y: int }
 
-let ReadCoordinates(): Set<Point> =
+let Parse(): Set<Point> =
     File.ReadAllLines("Day6/input.txt") 
         |> Seq.map (fun x -> { X = Convert.ToInt32(x.Split(',').[0]); Y = Convert.ToInt32(x.Split(',').[1]) }) 
         |> Set.ofSeq
 
-let CalculateManhattanDistance(M: Point, P: Point): int = 
+let GetManhattanDistance(M: Point, P: Point): int = 
     abs(M.X - P.X) + abs(M.Y - P.Y)
 
-let CalculateLargestSizeArea: int =
-    let coordinates = ReadCoordinates()
-
+let FindLargestArea(coordinates: Set<Point>): int =
     let mutable map: Map<Point, Set<Point>> = coordinates |> Set.map (fun p -> p, Set.ofSeq []) |> Map.ofSeq
 
     let minX = coordinates.Min(fun c -> c.X)
@@ -30,7 +29,7 @@ let CalculateLargestSizeArea: int =
             let mutable sd = Int32.MaxValue
             let mutable sp = None
             for point in coordinates do
-                let length = CalculateManhattanDistance({X = x; Y = y}, point)
+                let length = GetManhattanDistance({X = x; Y = y}, point)
                 if (length = sd) then
                     sp <- None
                 if (length < sd) then
@@ -51,9 +50,7 @@ let CalculateLargestSizeArea: int =
         .Count
 
 
-let CalculateSizeWithDistanceLessThan(maxDistance: int): int =
-    let coordinates = ReadCoordinates()
-
+let FindSizeWithDistanceLessThan(coordinates: Set<Point>, maxDistance: int): int =
     let minX = coordinates.Min(fun c -> c.X)
     let minY = coordinates.Min(fun c -> c.Y)
     let maxX = coordinates.Max(fun c -> c.X)
@@ -65,7 +62,7 @@ let CalculateSizeWithDistanceLessThan(maxDistance: int): int =
         for y = minY to maxY do
             let mutable sum = 0
             for point in coordinates do
-                sum <- sum + CalculateManhattanDistance({X = x; Y = y}, point)
+                sum <- sum + GetManhattanDistance({X = x; Y = y}, point)
             map <- Map.add { X = x; Y = y} sum map
     
     map <- 
@@ -74,7 +71,20 @@ let CalculateSizeWithDistanceLessThan(maxDistance: int): int =
 
     map.Count
 
-let Solve: string = 
-    sprintf "Day 6\n" +
-    sprintf "What is the size of the largest area that isn't infinite? %i\n" CalculateLargestSizeArea +
-    sprintf "What is the size of the region containing all locations which have a total distance to all given coordinates of less than 10000? %i\n" (CalculateSizeWithDistanceLessThan(10000))
+let Solve(): string = 
+    let mutable builder = new StringBuilder();
+    
+    builder <- builder.AppendLine("Day 6: Chronal Coordinates");
+    builder <- builder.AppendLine()
+
+    let coordinates = Parse();
+
+    builder <- builder.AppendLine("What is the size of the largest area that isn't infinite?")
+    builder <- builder.AppendLine(sprintf "%i" (FindLargestArea(coordinates)))
+    builder <- builder.AppendLine()
+
+    builder <- builder.AppendLine("What is the size of the region containing all locations which have a total distance to all given coordinates of less than 10000?")
+    builder <- builder.AppendLine(sprintf "%i" (FindSizeWithDistanceLessThan(coordinates, 10000)))
+    builder <- builder.AppendLine()
+
+    builder.ToString()

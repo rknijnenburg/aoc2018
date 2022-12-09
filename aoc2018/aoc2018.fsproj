@@ -2,13 +2,9 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Remove="Day12\**" />
-  </ItemGroup>
-
+	
   <ItemGroup>
 	<Compile Include="Day1\ChronalCalibration.fs" />
 	<Content Include="Day1\input.txt">
@@ -36,7 +32,6 @@
 	<Content Include="Day6\input.txt">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</Content>
-
 	<Compile Include="Day7\TheSumOfItsParts.fs" />
 	<Content Include="Day7\input.txt">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -45,15 +40,19 @@
 	<Content Include="Day8\input.txt">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</Content>
-	<Compile Include="Day9\Marble Mania.fs" />
+	<Compile Include="Day9\MarbleMania.fs" />
 	<Content Include="Day9\input.txt">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</Content>
-	<Compile Include="Day10\The Stars Align.fs" />
+	<Compile Include="Day10\TheStarsAlign.fs" />
 	<Content Include="Day10\input.txt">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</Content>
-	<Compile Include="Day11\Chronal Charge.fs" />
+	<Compile Include="Day11\ChronalCharge.fs" />
+	<Compile Include="Day12\SubterraneanSustainability.fs" />
+	<Content Include="Day12\input.txt">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Content>
 	<Compile Include="Program.fs" />
   </ItemGroup>
 

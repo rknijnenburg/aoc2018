@@ -1,32 +1,24 @@
-﻿module Day2
+﻿module Day2.InventoryManagementSystem
 
 open System
 open System.IO
 open System.Linq
+open System.Text
 
-let ReadBoxIDsFromPath(path: string) : string [] =
-    File.ReadAllLines(path)
+let Parse(): string[] = 
+    File.ReadAllLines("Day2/input.txt")
 
-let ReadBoxIDs(): string[] = 
-    ReadBoxIDsFromPath("Day2/input.txt")
-
-
-let CalculateCharacterCount(ID: string) = 
-    ID |> Seq.toArray |> Seq.countBy (fun x -> x)
-
-
-let CalculateBoxIDRecurringValue(ID: string): ( int * int ) =
-    let count = ID |> Seq.toArray |> Seq.countBy (fun x -> x)
+let FindRecurringValues(line: string): ( int * int ) =
+    let count = line |> Seq.toArray |> Seq.countBy (fun x -> x)
     (match count.Any(fun x -> snd x = 2) with | true -> 1 | false -> 0) , (match count.Any(fun x -> snd x = 3) with | true -> 1 | false -> 0)
 
 
-let CalculateChecksum: int =
-    let values = ReadBoxIDs() |> Seq.map(fun x -> CalculateBoxIDRecurringValue(x))
+let CalculateChecksum(ids: string[]): int =
+    let values = ids |> Seq.map(fun x -> FindRecurringValues(x))
     
     values.Sum(fun x -> fst x) * values.Sum(fun x -> snd x)
 
-let CalculateCommonLettersFromIdWithOneCharacterDifference: string =
-    let ids = ReadBoxIDs()
+let FindCommonCharacters(ids: string[]): string =
     let mutable found = false;
     let mutable result: string = null;
 
@@ -43,7 +35,20 @@ let CalculateCommonLettersFromIdWithOneCharacterDifference: string =
             
     result
 
-let Solve: string =
-    "Day 2\n" +
-    sprintf "Waht is the checksum: %i\n" CalculateChecksum +
-    sprintf "What letters are common between the two correct box IDs? %s\n" CalculateCommonLettersFromIdWithOneCharacterDifference
+let Solve(): string =
+    let mutable builder = new StringBuilder();
+    
+    builder <- builder.AppendLine("Day 2: Inventory Management System");
+    builder <- builder.AppendLine()
+
+    let ids = Parse();
+
+    builder <- builder.AppendLine("What is the checksum for your list of box IDs?")
+    builder <- builder.AppendLine(sprintf "%i" (CalculateChecksum(ids)))
+    builder <- builder.AppendLine()
+
+    builder <- builder.AppendLine("What letters are common between the two correct box IDs?")
+    builder <- builder.AppendLine(sprintf "%s" (FindCommonCharacters(ids)))
+    builder <- builder.AppendLine()
+
+    builder.ToString()

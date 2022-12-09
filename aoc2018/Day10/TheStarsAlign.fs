@@ -1,4 +1,4 @@
-﻿module Day10
+﻿module Day10.TheStarsAlign
 
 open System
 open System.IO
@@ -8,7 +8,7 @@ open System.Text
 type Light = { mutable X: int; mutable Y: int; VX: int; VY: int }
 type Box = { MinX: int; MaxX: int; MinY: int; MaxY: int }
 
-let ReadLights(): Set<Light> =
+let Parse(): Set<Light> =
     let mutable result: Set<Light> = Set.ofSeq []
 
     let matches = Regex.Matches(File.ReadAllText("Day10/input.txt"), "position=<(?<x>.*),(?<y>.*)> velocity=<(?<vx>.*),(?<vy>.*)>")
@@ -41,9 +41,7 @@ let GetNextHeight(lights: Set<Light>): int =
     let set = lights |> Set.map (fun l -> l.Y + l.VY)
     (set |> Set.maxElement) - (set |> Set.minElement)
 
-let FindMessage: char[,] * int = 
-    let lights = ReadLights()
-
+let FindMessage(lights: Set<Light>): char[,] * int = 
     let mutable duration = 0
     let mutable ph = Int32.MaxValue
     let mutable nh = GetNextHeight(lights)
@@ -61,15 +59,25 @@ let FindMessage: char[,] * int =
     text, duration
 
 
-let Solve: string =
+let Solve(): string =
     let mutable builder = new StringBuilder();
-    builder <- builder.AppendLine("Day 10");
+
+    builder <- builder.AppendLine("Day 10: The Stars Align");
+    builder <- builder.AppendLine()
+
+    let lights = Parse();
+
     builder <- builder.AppendLine("What message will eventually appear in the sky?");
-    let text, seconds = FindMessage
-    for y = 0 to (Array2D.length1 text) - 1 do
-        for x = 0 to (Array2D.length2 text) - 1 do
-             builder <- builder.Append(sprintf "%c" text.[y, x]);
+    let stars, seconds = FindMessage(lights)
+    for y = 0 to (Array2D.length1 stars) - 1 do
+        for x = 0 to (Array2D.length2 stars) - 1 do
+             builder <- builder.Append(sprintf "%c" stars.[y, x]);
         builder <- builder.AppendLine()
-    builder <- builder.AppendLine(sprintf "exactly how many seconds would they have needed to wait for that message to appear? %i" seconds)
+    builder <- builder.AppendLine()
+
+    builder <- builder.AppendLine("exactly how many seconds would they have needed to wait for that message to appear?")
+    builder <- builder.AppendLine(sprintf "%i" seconds)
+    builder <- builder.AppendLine()
+
 
     builder.ToString()

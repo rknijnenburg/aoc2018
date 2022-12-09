@@ -1,34 +1,42 @@
-﻿module Day7
+﻿module Day7.TheSumOfItsParts
 
 open System
 open System.IO
+open System.Text
+open System.Linq
 
-let ReadInstructions(): string[] =
-    File.ReadAllLines("Day7/input.txt")
+type Rule = { Required: char; Begin: char }
+
+let Parse(): Rule[] =
+    File.ReadAllLines("Day7/input.txt") 
+        |> Array.map (fun x -> 
+            let slices = x.Split(" ")
+            { Required = slices.[1].[0]; Begin = slices.[7].[0] }
+        )
 
 let GetNextStep(map: Map<char, Set<char>>): char option =
     Map.tryFindKey (fun _ value -> (Set.count value) = 0) map
 
 let GetNextSteps(map: Map<char, Set<char>>): Set<char> =
-    map |> Map.filter (fun key value -> (Set.count value) = 0) |> Map.toSeq |> Seq.map fst |> Set.ofSeq
+    map |> Map.filter (fun key value -> (Set.count value) = 0) |> Map.toSeq |> Seq.map fst |> Set.ofSeq    
 
-let BuildMap(): Map<char, Set<char>> =
-    let mutable map : Map<char, Set<char>> = Map.ofSeq[]
+let BuildMap(rules: Rule[]): Map<char, Set<char>> =
+    let mutable map: Map<char, Set<char>> =
+        rules
+        |> Array.map (fun x -> [| x.Required; x.Begin |])
+        |> Array.concat
+        |> Array.distinct
+        |> Array.map (fun x->  (x, Set.ofSeq []))
+        |> Map.ofSeq
 
-    for instruction in ReadInstructions() do
-        let split = instruction.Split(" ")
-        let step = split.[7].[0]
-        let required = split.[1].[0]
-        if not (map.ContainsKey(step)) then
-            map <- map.Add(step, Set.ofSeq [])
-        if not (map.ContainsKey(required)) then
-            map <- map.Add(required, Set.ofSeq [])
-        map <- map.Add(step, Set.add required map.[step])
+    for rule in rules do
+        map <- map.Add(rule.Begin, Set.add rule.Required map.[rule.Begin])
 
     map
 
-let CalculateCorrectOrder: string = 
-    let mutable map = BuildMap()
+
+let FindCorrectOrder(rules: Rule[]): string = 
+    let mutable map = BuildMap(rules)
     let mutable step = GetNextStep(map)
     let mutable result = String.Empty
 
@@ -43,8 +51,8 @@ let CalculateCorrectOrder: string =
 
 type Worker = { mutable Task: char option; mutable Remaining: int }
 
-let CalculateTimeToComplete: int = 
-    let mutable map = BuildMap()
+let CalculateTimeToComplete(rules: Rule[]): int = 
+    let mutable map = BuildMap(rules)
     let mutable workers = [0..4] |> Seq.map (fun w -> { Task = None; Remaining = 0 }) |> Seq.toArray
     let mutable duration = 0
     let mutable finished = []
@@ -74,7 +82,20 @@ let CalculateTimeToComplete: int =
         
     duration
 
-let Solve: string =
-    sprintf "Day 7\n" +
-    sprintf "In what order should the steps in your instructions be completed?  %s\n" CalculateCorrectOrder +
-    sprintf "How long will it take to complete all of the steps? %i\n" CalculateTimeToComplete
+let Solve(): string =
+    let mutable builder = new StringBuilder();
+    
+    builder <- builder.AppendLine("Day 7: The Sum of its Parts");
+    builder <- builder.AppendLine()
+
+    let rules = Parse();
+
+    builder <- builder.AppendLine("In what order should the steps in your instructions be completed?")
+    builder <- builder.AppendLine(sprintf "%s" (FindCorrectOrder(rules)))
+    builder <- builder.AppendLine()
+
+    builder <- builder.AppendLine("How long will it take to complete all of the steps?")
+    builder <- builder.AppendLine(sprintf "%i" (CalculateTimeToComplete(rules)))
+    builder <- builder.AppendLine()
+
+    builder.ToString()

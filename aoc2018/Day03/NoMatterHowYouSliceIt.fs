@@ -27,7 +27,7 @@ let ParseRectangle(line: string) : Rectangle =
     BuildRectangle(Some id, Int32.Parse(position[0]), Int32.Parse(position[1]), Int32.Parse(dimensions[0]), Int32.Parse(dimensions[1]))
     
 let Parse() = 
-    File.ReadAllLines("Day3/input.txt") |> Array.map (fun x -> ParseRectangle(x))
+    File.ReadAllLines("Day03/input.txt") |> Array.map (fun x -> ParseRectangle(x))
 
 let CalculateCoordinates(rect: Rectangle) : (int * int)[] = 
     [|rect.Left..rect.Right|] |> Array.map (fun x -> [|rect.Top..rect.Bottom|] |> Array.map (fun y -> x, y)) |> Array.concat

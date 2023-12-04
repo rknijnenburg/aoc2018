@@ -3,14 +3,19 @@
 open System
 open System.IO
 open System.Text
-open System.Linq
 
 type Rule = { Pattern: string; Result: char }
 type Input = { InitialState: string; Rules: Rule[] }
 
 let Parse(): Input =
     let lines = File.ReadAllLines("Day12/input.txt")
-    { InitialState = lines.[0].Replace("initial state: ", "").Trim(); Rules = lines.[2..] |> Array.map (fun s -> s.Split("=>")) |> Array.map (fun a -> { Pattern = a.[0].Trim(); Result = a.[1].Trim().[0] }) }
+    { 
+        InitialState = lines.[0].Replace("initial state: ", "").Trim(); 
+        Rules = 
+            lines.[2..] 
+            |> Array.map (fun s -> s.Split("=>")) 
+            |> Array.map (fun a -> { Pattern = a.[0].Trim(); Result = a.[1].Trim().[0] })
+    }
 
 let IsMatch( pots: Set<int>, index: int, c: char): bool =
     match c with
@@ -26,8 +31,8 @@ let IsPatternMatch( pots: Set<int>, index: int, pattern: string): bool =
 
 let Format(pots: Set<int>) =
     let mutable builder = new StringBuilder()
-    let min = pots.Min() - 3
-    let max = pots.Max() + 3
+    let min = (pots |> Seq.min) - 3
+    let max = (pots |> Seq.max) + 3
     for i = -10 to min do
         builder <- builder.Append(".")
     for i = min to max do
@@ -45,14 +50,16 @@ let GetSumPlantNumbers(input: Input, generations: int64): int64 =
 
     while (slopeCount < 20 && g <= generations) do
       let mutable next: Set<int> = Set.ofSeq []
-      for i = pots.Min() - 3 to pots.Max() + 3 do
+      let min = (pots |> Seq.min) - 3
+      let max = (pots |> Seq.max) + 3
+      for i = min to max do
         match input.Rules |> Seq.tryFind (fun x -> IsPatternMatch(pots, i, x.Pattern)) with 
         | Some rule -> 
             if rule.Result = '#' then 
                 next <- next.Add(i)
         | None -> ()
-      let sum = next.Sum()
-      let curSlope = sum - pots.Sum()
+      let sum = next |> Seq.sum
+      let curSlope = sum - (pots |> Seq.sum)
       if (curSlope = slope) then
         slopeCount <- slopeCount + 1
       else
@@ -62,9 +69,9 @@ let GetSumPlantNumbers(input: Input, generations: int64): int64 =
       g <- g + 1L
       
     if (slopeCount >= 20) then
-        int64(pots.Sum()) + (generations - (g - 1L)) * int64(slope)
+        int64( (pots |> Seq.sum)) + (generations - (g - 1L)) * int64(slope)
     else
-        int64(pots.Sum())
+        int64( (pots |> Seq.sum))
 
 let Solve(): string =
     let mutable builder = new StringBuilder()

@@ -27,6 +27,7 @@ let main argv =
     execute(Day10.TheStarsAlign.Solve);
     execute(Day11.ChronalCharge.Solve);
     execute(Day12.SubterraneanSustainability.Solve);
+    execute(Day13.MineCartMadness.Solve);
 
     Console.ReadKey() |> ignore
 

@@ -3,10 +3,9 @@
 open System.IO
 open System
 open System.Text
-open System.Linq
 
 let Parse(): string =
-    File.ReadAllText("Day5/input.txt").Trim()
+    File.ReadAllText("Day05/input.txt").Trim()
 
 let ProcessPolymer(polymer: string): string = 
     let mutable units = polymer.ToCharArray();

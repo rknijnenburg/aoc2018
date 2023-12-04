@@ -3,12 +3,11 @@
 open System
 open System.IO
 open System.Text
-open System.Linq
 
 type Rule = { Required: char; Begin: char }
 
 let Parse(): Rule[] =
-    File.ReadAllLines("Day7/input.txt") 
+    File.ReadAllLines("Day07/input.txt") 
         |> Array.map (fun x -> 
             let slices = x.Split(" ")
             { Required = slices.[1].[0]; Begin = slices.[7].[0] }

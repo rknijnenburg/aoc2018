@@ -2,21 +2,23 @@
 
 open System
 open System.IO
-open System.Linq
 open System.Text
 
 let Parse(): string[] = 
-    File.ReadAllLines("Day2/input.txt")
+    File.ReadAllLines("Day02/input.txt")
 
 let FindRecurringValues(line: string): ( int * int ) =
     let count = line |> Seq.toArray |> Seq.countBy (fun x -> x)
-    (match count.Any(fun x -> snd x = 2) with | true -> 1 | false -> 0) , (match count.Any(fun x -> snd x = 3) with | true -> 1 | false -> 0)
+    (
+        (match count |> Seq.exists (fun x -> snd x = 2) with | true -> 1 | false -> 0), 
+        (match count |> Seq.exists (fun x -> snd x = 3) with | true -> 1 | false -> 0)
+    )
 
 
 let CalculateChecksum(ids: string[]): int =
     let values = ids |> Seq.map(fun x -> FindRecurringValues(x))
     
-    values.Sum(fun x -> fst x) * values.Sum(fun x -> snd x)
+    (values |> Seq.map (fun x -> fst x) |> Seq.sum) * (values |> Seq.map (fun x -> snd x) |> Seq.sum)
 
 let FindCommonCharacters(ids: string[]): string =
     let mutable found = false;
@@ -26,10 +28,10 @@ let FindCommonCharacters(ids: string[]): string =
         if (not found) then 
             for i = 1 to id.Length - 2 do
                 if (not found) then
-                    let left = id.Take(i) |> String.Concat
+                    let left = id |> Seq.take i |> String.Concat
                     let middle = id.[i]
-                    let right = id.Skip(i+1) |> String.Concat
-                    if (ids.Any(fun x -> x.StartsWith(left) && x.[i] <> middle && x.EndsWith(right))) then
+                    let right = id |> Seq.skip (i+1) |> String.Concat
+                    if (ids |> Array.exists (fun x -> x.StartsWith(left) && x.[i] <> middle && x.EndsWith(right))) then
                         result <- left + right
                         found <- true
             

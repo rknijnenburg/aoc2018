@@ -2,14 +2,12 @@
 
 open System
 open System.IO
-open System.Linq
-open System.Collections.Generic
 open System.Text
 
 type Point = { X: int; Y: int }
 
 let Parse(): Set<Point> =
-    File.ReadAllLines("Day6/input.txt") 
+    File.ReadAllLines("Day06/input.txt") 
         |> Seq.map (fun x -> { X = Convert.ToInt32(x.Split(',').[0]); Y = Convert.ToInt32(x.Split(',').[1]) }) 
         |> Set.ofSeq
 
@@ -19,10 +17,10 @@ let GetManhattanDistance(M: Point, P: Point): int =
 let FindLargestArea(coordinates: Set<Point>): int =
     let mutable map: Map<Point, Set<Point>> = coordinates |> Set.map (fun p -> p, Set.ofSeq []) |> Map.ofSeq
 
-    let minX = coordinates.Min(fun c -> c.X)
-    let minY = coordinates.Min(fun c -> c.Y)
-    let maxX = coordinates.Max(fun c -> c.X)
-    let maxY = coordinates.Max(fun c -> c.Y)
+    let minX = coordinates |> Set.map (fun c -> c.X) |> Seq.min
+    let minY = coordinates |> Set.map (fun c -> c.Y) |> Seq.min
+    let maxX = coordinates |> Set.map (fun c -> c.X) |> Seq.max
+    let maxY = coordinates |> Set.map (fun c -> c.Y) |> Seq.max
 
     for x = minX to maxX do
         for y = minY to maxY do
@@ -41,20 +39,19 @@ let FindLargestArea(coordinates: Set<Point>): int =
     map <- 
         map 
             |> Map.filter (fun key _ -> key.X > minX && key.Y > minY && key.X < maxX && key.Y < maxY)
-            |> Map.filter (fun _ value -> value.All(fun p -> p.X > minX && p.Y > minY && p.X < maxX && p.Y < maxY))
+            |> Map.filter (fun _ value -> value |> Seq.forall (fun p -> p.X > minX && p.Y > minY && p.X < maxX && p.Y < maxY))
 
-    map
-        .OrderByDescending(fun x -> x.Value.Count)
-        .First()
-        .Value
-        .Count
+    (snd (map |> Map.toSeq |> Seq.sortByDescending (fun x -> (snd x) |> Seq.length) |> Seq.head)).Count
+        //.First()
+        //.Value
+        //.Count
 
 
 let FindSizeWithDistanceLessThan(coordinates: Set<Point>, maxDistance: int): int =
-    let minX = coordinates.Min(fun c -> c.X)
-    let minY = coordinates.Min(fun c -> c.Y)
-    let maxX = coordinates.Max(fun c -> c.X)
-    let maxY = coordinates.Max(fun c -> c.Y)
+    let minX = coordinates |> Set.map (fun c -> c.X) |> Seq.min
+    let minY = coordinates |> Set.map (fun c -> c.Y) |> Seq.min
+    let maxX = coordinates |> Set.map (fun c -> c.X) |> Seq.max
+    let maxY = coordinates |> Set.map (fun c -> c.Y) |> Seq.max
 
     let mutable map: Map<Point, int> = Map.ofSeq []
 

@@ -3,11 +3,10 @@
 open System.IO
 open System
 open System.Globalization
-open System.Linq
 open System.Text
 
 let Parse(): Map<int, int[]> =
-    let records = File.ReadAllLines("Day4/input.txt") |> Array.map (fun x -> (DateTime.ParseExact(x.Substring(1, 16), "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) , x.Substring(19))) |> Map.ofSeq
+    let records = File.ReadAllLines("Day04/input.txt") |> Array.map (fun x -> (DateTime.ParseExact(x.Substring(1, 16), "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) , x.Substring(19))) |> Map.ofSeq
     let mutable id = -1
     let mutable schedule : Map<int, int[]> = [] |> Map.ofSeq
     let mutable start = DateTime.MinValue
@@ -30,14 +29,30 @@ let Parse(): Map<int, int[]> =
 
 
 let FindGuardMostMinutesAsleep(schedule: Map<int, int[]>): int =
-    let guard, sum = schedule.Select(fun g -> g.Key, g.Value.Sum(fun c -> c)).OrderByDescending(fun (g, s) -> s).First()
+    let id =
+        fst (schedule 
+        |> Map.map (fun k v -> (v |> Seq.sum)) 
+        |> Map.toSeq
+        |> Seq.sortByDescending (fun t -> snd t)
+        |> Seq.head)
 
-    guard * Array.findIndex (fun c -> c = schedule.[guard].Max(fun m -> m)) schedule.[guard]
+    let max = schedule.[id] |> Array.max
+    let index = schedule.[id] |> Array.findIndex (fun c -> c = max)
+
+    id * index
 
 let FindGuardMostFrequentlyAsleepOnMinute(schedule: Map<int, int[]>): int =
-    let guard, max = schedule.Select(fun g -> g.Key, g.Value.Max(fun c -> c)).OrderByDescending(fun (g, s) -> s).First()
+    let id = 
+        fst (schedule 
+        |> Map.map (fun k v -> (v |> Seq.max)) 
+        |> Map.toSeq 
+        |> Seq.sortByDescending (fun t -> snd t) 
+        |> Seq.head)
 
-    guard * Array.findIndex (fun c -> c = schedule.[guard].Max(fun m -> m)) schedule.[guard]
+    let max = schedule.[id] |> Array.max
+    let index = schedule.[id] |> Array.findIndex (fun c -> c = max)
+
+    id * index
 
 let Solve(): string = 
     let mutable builder = new StringBuilder();

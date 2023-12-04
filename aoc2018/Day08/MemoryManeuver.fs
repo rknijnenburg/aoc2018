@@ -7,7 +7,7 @@ open System.Text
 type Node = { Parent: Node option; mutable Header: int[]; mutable Children : Node list; mutable Metadata : int[]; mutable Sum: int; mutable Value: int}
 
 let Parse(): Node =
-    let mutable remaining = File.ReadAllText("Day8/input.txt").Split(" ") |> Array.map (fun s -> Convert.ToInt32(s))
+    let mutable remaining = File.ReadAllText("Day08/input.txt").Split(" ") |> Array.map (fun s -> Convert.ToInt32(s))
     let mutable current: Node = { Parent = None; Header = remaining.[0..1]; Children = []; Metadata = [||]; Sum = 0; Value = 0 }
     remaining <- remaining.[2..]
 

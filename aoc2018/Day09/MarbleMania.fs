@@ -3,13 +3,12 @@
 open System
 open System.IO
 open System.Text
-open System.Linq
 
 type Game = { Players: int; mutable Points: int }
 type Marble = { Value: int64; mutable Before: Marble option; mutable After: Marble option}
 
 let Parse(): Game =
-    File.ReadAllText("Day9/input.txt").Split(" ") |> (fun x -> { Players = Convert.ToInt32(x.[0]); Points = Convert.ToInt32(x.[6]) })        
+    File.ReadAllText("Day09/input.txt").Split(" ") |> (fun x -> { Players = Convert.ToInt32(x.[0]); Points = Convert.ToInt32(x.[6]) })        
 
 let Remove(current: Marble): Marble =
     let before = current.Before.Value
@@ -48,7 +47,7 @@ let CalculateHighscore(players: int, points: int): int64 =
 
         turn <- turn + 1
 
-    scores.Max()
+    scores |> Seq.max
 
 let Solve(): string =
     let mutable builder = new StringBuilder();

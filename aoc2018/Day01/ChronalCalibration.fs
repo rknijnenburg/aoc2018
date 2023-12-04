@@ -6,7 +6,7 @@ open System.Text
 
 
 let Parse() : int [] = 
-    File.ReadAllLines("Day1/input.txt") |> Array.map (fun x -> Int32.Parse(x))
+    File.ReadAllLines("Day01/input.txt") |> Array.map (fun x -> Int32.Parse(x))
 
 let CalculateFrequency(modifications: int[]) : int = 
      modifications |> Array.fold (fun acc elem -> acc + elem) 0
